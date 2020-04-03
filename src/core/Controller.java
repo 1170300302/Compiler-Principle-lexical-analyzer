@@ -32,8 +32,10 @@ public class Controller {
   // 转移方法
   private static void lexicalAnalysisTransform(CharStream charStream, DFA dfa) {
     // DFA，字符流都向前移动
-    dfa.move(charStream.getCurrentCharacter());
-    charStream.move(dfa.getCurrentStateID());
+    char tmpChar = charStream.getCurrentCharacter();
+    int tmpStateID = dfa.getCurrentStateID();
+    dfa.move(tmpChar);
+    charStream.move(tmpStateID);
   }
   
   // 错误处理方法
@@ -41,6 +43,7 @@ public class Controller {
     // 让错误处理类处理错误，调用回溯方法，如果回溯成功会得到找到的字符流下标，stateID，如果回溯失败只得到-1，-1
     int[] errorHandlingRes = ErrorHandling.backtrackingFinalState(charStream.getCharacterStreamState(), charStream.getCurrentPointer());
     // 回溯成功
+    int tmpStateID = dfa.getCurrentStateID();
     if(errorHandlingRes[0] != -1) {
       // 字符流下标转移到对应下标
       charStream.moveTo(errorHandlingRes[0]);
@@ -55,7 +58,7 @@ public class Controller {
       charStream.outputErrorMessage();
     }
     // 无论如何字符流都要向前移动
-    charStream.move(dfa.getCurrentStateID());
+    charStream.move(tmpStateID);
   }
 
 }
