@@ -3,6 +3,7 @@ package errorHandling;
 import java.util.List;
 
 import charStream.CharStream;
+import dfa.DFA;
 import dfa.State;
 
 public class ErrorHandling {
@@ -14,7 +15,7 @@ public class ErrorHandling {
       // 得到对应的stateID
       int stateID = characterStreamState.get(i);
       // 检查是否是终态，是则返回下标和对应stateID，否则继续循环
-      if(State.checkFinalState(stateID)) {
+      if(DFA.checkFinalState(stateID)) {
         int[] res = {i, stateID};
         return res;
       }

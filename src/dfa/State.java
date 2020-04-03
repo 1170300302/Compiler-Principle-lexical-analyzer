@@ -7,7 +7,7 @@ public class State {
   
   private int stateID;// 索引transformMap
   private Map<Character, Integer> transformMap = new HashMap<>();// 状态转换表
-  private static Map<Integer, String> finalStateOutputMap = new HashMap<>();// 终态对应的输出信息，即Token对应的输出信息
+//  private static Map<Integer, String> finalStateOutputMap = new HashMap<>();// 终态对应的输出信息，即Token对应的输出信息
 
   /**
    * @dec 得到StateID——该方法已完成，如无需要，无需改动
@@ -63,17 +63,17 @@ public class State {
    * @param stateID 待检查的stateID
    * @return 是否是终态
    */
-  public static boolean checkFinalState(int stateID) {
-    return finalStateOutputMap.containsKey(stateID);
-  }
+//  public static boolean checkFinalState(int stateID) {
+//    return finalStateOutputMap.containsKey(stateID);
+//  }
   
   /**
    * @dec 返回终态对应的输出信息，即Token对应的输出信息——该方法已完成，如无需要，无需改动
    * @param stateID 对应终态
    * @return 输出信息
    */
-  public static String finalStateOutput(int stateID) {
-    return finalStateOutput(stateID);
-  }
+//  public static String finalStateOutput(int stateID) {
+//    return finalStateOutput(stateID);
+//  }
   
 }
