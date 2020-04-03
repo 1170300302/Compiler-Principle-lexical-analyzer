@@ -20,8 +20,19 @@ public class State {
   /**
    * @dec 构造函数，初始化isEndState，stateID，transformMap——待完成方法，可以随意改动
    */
-  public State() {
-    
+  public State(String[] strings) {
+    this.stateID = Integer.parseInt(strings[0]);
+    String[] transformCharacters = strings[2].split("");
+    for(int i = 0; i < transformCharacters.length; i++) {
+      this.transformMap.put(transformCharacters[i].charAt(0), Integer.parseInt(strings[1]));
+    }
+  }
+  
+  public void setState(String[] strings) {
+    String[] transformCharacters = strings[2].split("");
+    for(int i = 0; i < transformCharacters.length; i++) {
+      this.transformMap.put(transformCharacters[i].charAt(0), Integer.parseInt(strings[1]));
+    }
   }
   
   /**

@@ -1,5 +1,9 @@
 package dfa;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +27,30 @@ public class DFA {
    * @param filePath DFA转换表的文件路径
    */
   public DFA(String filePath) {
+    try {
+      BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
+      String line = "";
+      String lastStateID = "";
+      while((line = bufferedReader.readLine()) != null) {
+        String[] tmpStrings = line.split(" ");
+        if(tmpStrings[0].equals(lastStateID)) {
+          states.get(states.size() - 1).setState(tmpStrings);
+        }
+        else {
+          this.states.add(new State(tmpStrings));
+          if(tmpStrings[0].equals("10")) {
+            this.initialState = states.get(states.size() - 1);
+            this.currentState = initialState;
+          }
+        }
+        lastStateID = tmpStrings[0];
+      }
+      bufferedReader.close();
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     
   }
   
