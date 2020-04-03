@@ -4,16 +4,16 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class DFA {
   
   private State initialState;// DFA初始状态
   private State currentState;// DFA当前指向的状态
-  private List<State> states = new ArrayList<>();// DFA状态集合
+//  private List<State> states = new ArrayList<>();// DFA状态集合
+  private final int statesNum = 84;
+  private State[] states = new State[statesNum];
   private static Map<Integer, String> finalStateAndInfoMap = new HashMap<>();
   
   /**
@@ -37,12 +37,12 @@ public class DFA {
       while((line = bufferedReader.readLine()) != null) {
         String[] tmpStrings = line.split(" ");
         if(tmpStrings[0].equals(lastStateID)) {
-          states.get(states.size() - 1).setState(tmpStrings);
+          states[Integer.parseInt(lastStateID)].setState(tmpStrings);
         }
         else {
-          this.states.add(new State(tmpStrings));
+          this.states[Integer.parseInt(tmpStrings[0])] = new State(tmpStrings);
           if(tmpStrings[0].equals("10")) {
-            this.initialState = states.get(states.size() - 1);
+            this.initialState = states[10];
             this.currentState = initialState;
           }
         }
@@ -107,7 +107,8 @@ public class DFA {
    * @param currentCharacter 输入字符
    */
   public void move(char currentCharacter) {
-    this.currentState = states.get(currentState.move(currentCharacter));// 改变currentState的值，currentState.move返回一个int
+//    this.currentState = states.get(currentState.move(currentCharacter));// 改变currentState的值，currentState.move返回一个int
+    this.currentState = states[currentState.move(currentCharacter)];
   }
   
   /**
