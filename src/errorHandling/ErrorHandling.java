@@ -1,10 +1,8 @@
 package errorHandling;
 
 import java.util.List;
-
 import charStream.CharStream;
 import dfa.DFA;
-import dfa.State;
 
 public class ErrorHandling {
   
