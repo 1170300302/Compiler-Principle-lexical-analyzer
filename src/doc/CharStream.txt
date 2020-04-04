@@ -1,5 +1,6 @@
 int main()
 {
-    printf("Hello World!");
+    int a = 1;
+    int b = a + 0x123 + 0234 + 'x' + 0.00E00;/*b = a + 1*/
     return;
 }

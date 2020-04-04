@@ -22,10 +22,12 @@ public class State {
    */
   public State(String[] strings) {
     this.stateID = Integer.parseInt(strings[0]);
-    String[] transformCharacters = strings[2].split("");
-    for(int i = 0; i < transformCharacters.length; i++) {
-      this.transformMap.put(transformCharacters[i].charAt(0), Integer.parseInt(strings[1]));
-    }
+    if(strings.length != 1) {
+      String[] transformCharacters = strings[2].split("");
+      for(int i = 0; i < transformCharacters.length; i++) {
+        this.transformMap.put(transformCharacters[i].charAt(0), Integer.parseInt(strings[1]));
+      } 
+    } 
   }
   
   public void setState(String[] strings) {
@@ -41,15 +43,13 @@ public class State {
    * @return 是否可以移动
    */
   public boolean checkMove(char currentCharacter) {
-    try {
-      if(this.transformMap.containsKey('@')) {
-        return true;
-      }
-      this.transformMap.get(currentCharacter);
+    if(transformMap.containsKey('@') || transformMap.containsKey('#')) {
       return true;
-    } catch (NullPointerException e) {
-      return false;
     }
+    if(transformMap.containsKey(currentCharacter)) {
+      return true;
+    }
+    return false;
   }
   
   /**
@@ -63,7 +63,15 @@ public class State {
         return this.transformMap.get('@');
       }
       else {
-        return this.transformMap.get('*');
+        return this.transformMap.get(currentCharacter);
+      }
+    }
+    if(this.transformMap.containsKey('#')) {
+      if(currentCharacter != '*' && currentCharacter != '/') {
+        return this.transformMap.get('#');
+      }
+      else {
+        return this.transformMap.get(currentCharacter);
       }
     }
     return this.transformMap.get(currentCharacter);

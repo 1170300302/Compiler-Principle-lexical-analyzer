@@ -40,14 +40,12 @@ public class DFA {
           states[Integer.parseInt(lastStateID)].setState(tmpStrings);
         }
         else {
-          this.states[Integer.parseInt(tmpStrings[0])] = new State(tmpStrings);
-          if(tmpStrings[0].equals("10")) {
-            this.initialState = states[10];
-            this.currentState = initialState;
-          }
+          states[Integer.parseInt(tmpStrings[0])] = new State(tmpStrings);
         }
         lastStateID = tmpStrings[0];
       }
+      this.initialState = states[10];
+      this.currentState = initialState;
       bufferedReader.close();
       setFinalStateAndInfoMap();
     } catch (FileNotFoundException e) {
@@ -58,39 +56,39 @@ public class DFA {
   }
   
   private static void setFinalStateAndInfoMap() {
-    finalStateAndInfoMap.put(21,"标识符");
-    finalStateAndInfoMap.put(34,"注释");
-    finalStateAndInfoMap.put(35,"运算符");
-    finalStateAndInfoMap.put(36,"运算符");
-    finalStateAndInfoMap.put(37,"运算符");
-    finalStateAndInfoMap.put(38,"运算符");
-    finalStateAndInfoMap.put(39,"运算符");
-    finalStateAndInfoMap.put(40,"运算符");
-    finalStateAndInfoMap.put(41,"运算符");
-    finalStateAndInfoMap.put(42,"运算符");
-    finalStateAndInfoMap.put(43,"运算符");
-    finalStateAndInfoMap.put(44,"运算符");
-    finalStateAndInfoMap.put(45,"运算符");
-    finalStateAndInfoMap.put(46,"运算符");
-    finalStateAndInfoMap.put(47,"运算符");
-    finalStateAndInfoMap.put(48,"运算符");
-    finalStateAndInfoMap.put(49,"运算符");
-    finalStateAndInfoMap.put(50,"运算符");
-    finalStateAndInfoMap.put(51,"运算符");
-    finalStateAndInfoMap.put(52,"运算符");
-    finalStateAndInfoMap.put(53,"运算符");
-    finalStateAndInfoMap.put(54,"运算符");
-    finalStateAndInfoMap.put(55,"运算符");
-    finalStateAndInfoMap.put(56,"运算符");
-    finalStateAndInfoMap.put(24,"界符");
-    finalStateAndInfoMap.put(81,"八进制常数");
-    finalStateAndInfoMap.put(83,"十六进制常数");
-    finalStateAndInfoMap.put(77,"常数");
-    finalStateAndInfoMap.put(78,"常数");
-    finalStateAndInfoMap.put(79,"常数");
-    finalStateAndInfoMap.put(80,"常数");
-    finalStateAndInfoMap.put(62,"字符常数");
-
+    finalStateAndInfoMap.put(20,"IDN");
+    finalStateAndInfoMap.put(24,"BOUNDARY");
+    finalStateAndInfoMap.put(34,"NOTES");
+    finalStateAndInfoMap.put(35,"OPERATOR");
+    finalStateAndInfoMap.put(36,"OPERATOR");
+    finalStateAndInfoMap.put(37,"OPERATOR");
+    finalStateAndInfoMap.put(38,"OPERATOR");
+    finalStateAndInfoMap.put(39,"OPERATOR");
+    finalStateAndInfoMap.put(40,"OPERATOR");
+    finalStateAndInfoMap.put(41,"OPERATOR");
+    finalStateAndInfoMap.put(42,"OPERATOR");
+    finalStateAndInfoMap.put(43,"OPERATOR");
+    finalStateAndInfoMap.put(44,"OPERATOR");
+    finalStateAndInfoMap.put(45,"OPERATOR");
+    finalStateAndInfoMap.put(46,"OPERATOR");
+    finalStateAndInfoMap.put(47,"OPERATOR");
+    finalStateAndInfoMap.put(48,"OPERATOR");
+    finalStateAndInfoMap.put(49,"OPERATOR");
+    finalStateAndInfoMap.put(50,"OPERATOR");
+    finalStateAndInfoMap.put(51,"OPERATOR");
+    finalStateAndInfoMap.put(52,"OPERATOR");
+    finalStateAndInfoMap.put(53,"OPERATOR");
+    finalStateAndInfoMap.put(54,"OPERATOR");
+    finalStateAndInfoMap.put(55,"OPERATOR");
+    finalStateAndInfoMap.put(56,"OPERATOR");
+    finalStateAndInfoMap.put(57,"OPERATOR");
+    finalStateAndInfoMap.put(62,"CHARCONST");
+    finalStateAndInfoMap.put(77,"CONST");
+    finalStateAndInfoMap.put(78,"CONST");
+    finalStateAndInfoMap.put(79,"CONST");
+    finalStateAndInfoMap.put(80,"CONST");
+    finalStateAndInfoMap.put(81,"OCT");
+    finalStateAndInfoMap.put(83,"HEX");
   }
   
   /**

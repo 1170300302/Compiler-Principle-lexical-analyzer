@@ -1,4 +1,4 @@
-10 20 abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
+10 20 abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_
 10 24 {}[](),;:?~                                         
 10 35 /                                                   
 10 36 +                                                   
@@ -13,41 +13,56 @@
 10 60 '                                                   
 10 79 123456789                                           
 10 80 0                                                   
-20 21 _                                                   
-21 21 0123456789                                          
-21 22 abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
-22 21 _                                                   
+20 20 abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_
+24                                         
 32 32 @                                                    
 32 33 *                                                   
-33 32 @                                                    
+33 32 #                                                    
 33 33 *                                                   
-33 34 /                                                   
+33 34 /
+34                                                   
 35 32 *                                                   
 35 44 =                                                   
 36 37 =                                                   
-36 38 +                                                   
+36 38 +
+37
+38                                                   
 39 40 -                                                   
-39 41 =                                                   
-42 43 =                                                   
+39 41 =
+40
+41                                                   
+42 43 =
+43
+44
+45                                                   
 46 47 >                                                   
-46 48 =                                                   
+46 48 =
+47
+48                                                   
 49 50 <                                                   
-49 51 =                                                   
-52 53 |                                                   
-54 55 &                                                   
+49 51 =
+50
+51                                                   
+52 53 |
+53                                                   
+54 55 &
+55
+56                                                   
 57 56 =                                                   
 60 61 abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
-61 61 abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
-61 62 '                                                   
+61 62 '
+62                                                   
 70 78 0123456789                                          
 71 72 +-                                                  
 71 77 0123456789                                          
 72 77 0123456789                                          
 77 77 0123456789                                          
-78 78 0123456789                                          
+78 78 0123456789
+78 71 E                                          
 79 70 .                                                   
 79 71 E                                                   
-79 79 0123456789                                          
+79 79 0123456789
+80 70 .                                          
 80 81 1234567                                             
 80 82 x                                                   
 81 81 01234567                                            

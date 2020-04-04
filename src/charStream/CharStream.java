@@ -14,10 +14,11 @@ import dfa.DFA;
 public class CharStream {
   
   public List<Character> characterStream = new ArrayList<>();// 存储整个输入文件
-  private List<Integer> characterStreamState = new ArrayList<>();// 存储字符流对应的经历过的状态，对于已扫描过的区域应该和字符流保持长度一致
+  public List<Integer> characterStreamState = new ArrayList<>();// 存储字符流对应的经历过的状态，对于已扫描过的区域应该和字符流保持长度一致
   private int currentPointer;// 当前指针
   private static List<Integer> haveProcessedPointer = new ArrayList<>();// 已处理的下标，之后的回溯操作不允许对这里面的下标操作
   private Map<String, String> token = new HashMap<>();
+  private List<String> keyword = new ArrayList<>();
   
   /**
    * @dec 得到currentCharacter——该方法已完成，如无需要，无需改动
@@ -43,7 +44,16 @@ public class CharStream {
     return this.currentPointer;
   }
   
-
+  public Map<String, String> getToken(){
+    return new HashMap<>(token);
+  }
+  
+  public void setCharacterStreamState(int index) {
+    for(int i = index + 1; i <= (characterStreamState.size() - 1); i++) {
+      characterStreamState.remove(i);
+    }
+  }
+  
   /**
    * @dec 构造函数，初始化各个字段——待完成方法，可以随意改动
    * @dec 具体初始化内容包括：测试文件内容到characterStream，currentPointer = 0
@@ -54,13 +64,9 @@ public class CharStream {
       BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
       String line = "";
       while((line = bufferedReader.readLine()) != null) {
-//        System.out.println("line is " + line);
         String[] tmpStrings = line.split("");
         for(int i = 0; i < tmpStrings.length; i++) {
-//          System.out.println("char is " + tmpStrings[i]);
-          if(!tmpStrings[i].equals("") && !tmpStrings[i].equals(" ")) {
-//            System.out.println("addbef is " + tmpStrings[i]);
-//            System.out.println("add is " + tmpStrings[i].charAt(0));
+          if(!tmpStrings[i].equals("")) {
             this.characterStream.add(tmpStrings[i].charAt(0));
           }
         }
@@ -68,6 +74,15 @@ public class CharStream {
       this.characterStream.add(null);
       this.currentPointer = 0;
       bufferedReader.close();
+      BufferedReader keywordBufferedReader = new BufferedReader(new FileReader(".\\src\\doc\\Keyword.txt"));
+      line = "";
+      while((line = keywordBufferedReader.readLine()) != null) {
+        String[] tmpStrings = line.split(",");
+        for(int i = 0; i < tmpStrings.length; i++) {
+          this.keyword.add(tmpStrings[i]);
+        }
+      }
+      keywordBufferedReader.close();
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     } catch (IOException e) {
@@ -76,12 +91,10 @@ public class CharStream {
   }
   
   public boolean checkEnd() {
-    try {
-      characterStream.get(currentPointer);
-      return true;
-    } catch (Exception e) {
+    if((characterStream.size() <= currentPointer) || characterStream.get(currentPointer) == null) {
       return false;
     }
+    return true;
   }
   
   /**
@@ -127,6 +140,7 @@ public class CharStream {
       }
     }
     token.put(tokenBuilder.toString(), DFA.finalStateOutput(stateID));
+    System.out.printf("token = %s, %s, finalState = %d\n", tokenBuilder.toString(), DFA.finalStateOutput(stateID), stateID);
   }
   
   /**
@@ -135,8 +149,19 @@ public class CharStream {
    * @dec 这里一定要更新haveProcessedPointer！！！
    */
   public void outputErrorMessage() {
-    System.out.printf("There's an unexpected error at %d\n", currentPointer);
+    if(getCurrentCharacter() != ' ')
+      System.out.printf("There's an unexpected error at %c\n", getCurrentCharacter());
     haveProcessedPointer.add(currentPointer);
+  }
+  
+  public void tokenIdn2Keyword() {
+    for(Map.Entry<String, String> entry : token.entrySet()) {
+      if(entry.getValue().equals("IDN")) {
+        if(keyword.contains(entry.getKey())) {
+          token.put(entry.getKey(), "KEYWORD");
+        }
+      }
+    }
   }
   
 }
