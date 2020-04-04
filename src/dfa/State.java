@@ -42,6 +42,9 @@ public class State {
    */
   public boolean checkMove(char currentCharacter) {
     try {
+      if(this.transformMap.containsKey('@')) {
+        return true;
+      }
       this.transformMap.get(currentCharacter);
       return true;
     } catch (NullPointerException e) {
@@ -55,6 +58,14 @@ public class State {
    * @return ÒÆ¶¯ºóµÄstateID
    */
   public int move(char currentCharacter) {
+    if(this.transformMap.containsKey('@')) {
+      if(currentCharacter != '*') {
+        return this.transformMap.get('@');
+      }
+      else {
+        return this.transformMap.get('*');
+      }
+    }
     return this.transformMap.get(currentCharacter);
   }
   

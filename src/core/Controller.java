@@ -14,11 +14,12 @@ public class Controller {
   // 词法分析控制方法
   private static void lexicalAnalysis() {
     // 实例化字符流和DFA
-    CharStream charStream = new CharStream("测试文件路径");
-    DFA dfa = new DFA("转换表文件路径");
+    CharStream charStream = new CharStream(".\\src\\doc\\CharStream.txt");
+    DFA dfa = new DFA(".\\src\\doc\\DFA.txt");
+    System.out.println("charStream is " + charStream.characterStream);
     
     // 一直循环，直到检测到文件结束
-    while(charStream.getCurrentCharacter() == '0') {// 这里暂且用'0'表示文件结束，以后可以通过其他方法具体实现
+    while(charStream.checkEnd()) {// 这里暂且用'0'表示文件结束，以后可以通过其他方法具体实现
       // 检测当前状态遇到当前输入能否转移，如果可以进入转移方法，如果不可以进入错误处理方法
       if(dfa.checkMove(charStream.getCurrentCharacter())){
         lexicalAnalysisTransform(charStream, dfa);// 转移方法
@@ -34,6 +35,8 @@ public class Controller {
     // DFA，字符流都向前移动
     char tmpChar = charStream.getCurrentCharacter();
     int tmpStateID = dfa.getCurrentStateID();
+    System.out.println("tmpChar is " + tmpChar);
+    System.out.println("tmpStateID is " + tmpStateID);
     dfa.move(tmpChar);
     charStream.move(tmpStateID);
   }

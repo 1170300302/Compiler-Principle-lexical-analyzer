@@ -1,14 +1,23 @@
 package charStream;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import dfa.DFA;
 
 public class CharStream {
   
-  private List<Character> characterStream = new ArrayList<>();// 存储整个输入文件
+  public List<Character> characterStream = new ArrayList<>();// 存储整个输入文件
   private List<Integer> characterStreamState = new ArrayList<>();// 存储字符流对应的经历过的状态，对于已扫描过的区域应该和字符流保持长度一致
   private int currentPointer;// 当前指针
   private static List<Integer> haveProcessedPointer = new ArrayList<>();// 已处理的下标，之后的回溯操作不允许对这里面的下标操作
+  private Map<String, String> token = new HashMap<>();
   
   /**
    * @dec 得到currentCharacter——该方法已完成，如无需要，无需改动
@@ -41,7 +50,38 @@ public class CharStream {
    * @param filePath 字符流的文件路径
    */
   public CharStream(String filePath) {
-    
+    try {
+      BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
+      String line = "";
+      while((line = bufferedReader.readLine()) != null) {
+//        System.out.println("line is " + line);
+        String[] tmpStrings = line.split("");
+        for(int i = 0; i < tmpStrings.length; i++) {
+//          System.out.println("char is " + tmpStrings[i]);
+          if(!tmpStrings[i].equals("") && !tmpStrings[i].equals(" ")) {
+//            System.out.println("addbef is " + tmpStrings[i]);
+//            System.out.println("add is " + tmpStrings[i].charAt(0));
+            this.characterStream.add(tmpStrings[i].charAt(0));
+          }
+        }
+      }
+      this.characterStream.add(null);
+      this.currentPointer = 0;
+      bufferedReader.close();
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+  
+  public boolean checkEnd() {
+    try {
+      characterStream.get(currentPointer);
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
   }
   
   /**
@@ -79,7 +119,14 @@ public class CharStream {
    * @param stateID 在finalStateOutput作为参数传递
    */
   public void outputToken(int stateID) {
-    
+    StringBuilder tokenBuilder = new StringBuilder();
+    for(int i = 0; i <= currentPointer; i++) {
+      if(!haveProcessedPointer.contains(i)) {
+        tokenBuilder.append(characterStream.get(i));
+        haveProcessedPointer.add(i);
+      }
+    }
+    token.put(tokenBuilder.toString(), DFA.finalStateOutput(stateID));
   }
   
   /**
@@ -88,7 +135,8 @@ public class CharStream {
    * @dec 这里一定要更新haveProcessedPointer！！！
    */
   public void outputErrorMessage() {
-    
+    System.out.printf("There's an unexpected error at %d\n", currentPointer);
+    haveProcessedPointer.add(currentPointer);
   }
   
 }
