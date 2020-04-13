@@ -1,6 +1,11 @@
-int main()
+$int main()
 {
     int a = 1;
     int b = a + 0x123 + 0234 + 'x' + 0.00E00;/*b = a + 1*/
+    float f = 0x12G;
     return;
+    /* ad
+    */
+    if(a)
+    else
 }

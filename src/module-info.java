@@ -5,4 +5,5 @@
  * @author Landon
  *
  */
-module Compiler {}
+module Compiler {
+  requires java.desktop;}
