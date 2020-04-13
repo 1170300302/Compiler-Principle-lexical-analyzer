@@ -1,6 +1,10 @@
 package core;
 
 import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.UIManager;
+
 import charStream.CharStream;
 import dfa.DFA;
 import errorHandling.ErrorHandling;
@@ -18,6 +22,9 @@ public class Controller {
     EventQueue.invokeLater(new Runnable() {
       public void run() {
         try {
+          JFrame.setDefaultLookAndFeelDecorated(true);
+          //UIManager.setLookAndFeel("com.jtattoo.plaf.mint.MintLookAndFeel");
+          UIManager.setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
           coreFrame = new CoreFrame();
         } catch (Exception e) {
           e.printStackTrace();
