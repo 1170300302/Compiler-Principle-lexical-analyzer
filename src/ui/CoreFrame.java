@@ -20,14 +20,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
@@ -169,14 +169,16 @@ public class CoreFrame extends JFrame {
     corePanel.add(errorScroll);
   }
 
-  public void setTokenTable(Map<String, String> token) {
+  public List<String[]> setTokenTable(List<String[]> token) {
+    List<String[]> resToken = new ArrayList<>();
     Vector<String> title = new Vector<>();
     title.add("¼ü");
     title.add("Öµ");
     Vector<Vector<Object>> tableData = new Vector<Vector<Object>>();
-    for (Map.Entry<String, String> entry : token.entrySet()) {
+    for (int i = 0; i < token.size(); i++) {
       Vector<Object> tmpVector = new Vector<>();
-      switch (entry.getValue()) {
+      String[] tmpStrings = new String[3];
+      switch (token.get(i)[1]) {
         case "IDN":
         case "CONST":
         case "NOTES":
@@ -185,24 +187,36 @@ public class CoreFrame extends JFrame {
         case "HEX":
 //          System.out.println(
 //              entry.getKey() + "\t\t\t" + "<" + entry.getValue() + ", " + entry.getKey() + ">");
-          tmpVector.add(entry.getKey());
-          tmpVector.add(entry.getValue() + "," + entry.getKey());
+//          tmpVector.add(entry.getKey());
+//          tmpVector.add(entry.getValue() + "," + entry.getKey());
+          tmpVector.add(token.get(i)[0]);
+          tmpVector.add(token.get(i)[1] + "," + token.get(i)[0]);
+          tmpStrings[0] = token.get(i)[0];
+          tmpStrings[1] = token.get(i)[1];
+          tmpStrings[2] = token.get(i)[0];
           break;
         case "KEYWORD":
         case "BOUNDARY":
         case "OPERATOR":
 //          System.out.println(entry.getKey() + "\t\t\t" + "<" + entry.getKey() + ", _>");
-          tmpVector.add(entry.getKey());
-          tmpVector.add(entry.getKey() + "," + "_");
+//          tmpVector.add(entry.getKey());
+//          tmpVector.add(entry.getKey() + "," + "_");
+          tmpVector.add(token.get(i)[0]);
+          tmpVector.add(token.get(i)[0] + "," + "_");
+          tmpStrings[0] = token.get(i)[0];
+          tmpStrings[1] = token.get(i)[0];
+          tmpStrings[2] = "_";
           break;
         default:
           System.out.println("Error");
           break;
       }
       tableData.add(tmpVector);
+      resToken.add(tmpStrings);
     }
     TableModel tokenTableModel = new DefaultTableModel(tableData, title);
     tokenTable.setModel(tokenTableModel);
+    return new ArrayList<>(resToken);
   }
 
   public void setErrorTextArea() {

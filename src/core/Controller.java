@@ -1,11 +1,8 @@
 package core;
 
 import java.awt.EventQueue;
-import java.util.List;
-
 import javax.swing.JFrame;
 import javax.swing.UIManager;
-
 import charStream.CharStream;
 import dfa.DFA;
 import errorHandling.ErrorHandling;
@@ -49,7 +46,7 @@ public class Controller {
       }
     }
     charStream.tokenIdn2Keyword();
-    coreFrame.setTokenTable(charStream.getToken());
+    charStream.setToken(coreFrame.setTokenTable(charStream.getToken()));
 //    output(charStream);
   }
 

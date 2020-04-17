@@ -5,9 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import dfa.DFA;
 
@@ -17,7 +15,7 @@ public class CharStream {
   public List<Integer> characterStreamState = new ArrayList<>();
   private int currentPointer;
   private static List<Integer> haveProcessedPointer = new ArrayList<>();
-  private Map<String, String> token = new HashMap<>();
+  private List<String[]> token = new ArrayList<>();
   private List<String> errorList = new ArrayList<>();
   private List<String> keyword = new ArrayList<>();
 
@@ -45,8 +43,12 @@ public class CharStream {
     return this.currentPointer;
   }
 
-  public Map<String, String> getToken() {
-    return new HashMap<>(token);
+  public List<String[]> getToken() {
+    return new ArrayList<>(token);
+  }
+  
+  public void setToken(List<String[]> token) {
+    this.token = new ArrayList<>(token);
   }
 
   public void setCharacterStreamState(int index) {
@@ -149,7 +151,11 @@ public class CharStream {
         haveProcessedPointer.add(i);
       }
     }
-    token.put(tokenBuilder.toString(), DFA.finalStateOutput(stateID));
+    String tmp[] = new String[3];
+    tmp[0] = tokenBuilder.toString();
+    tmp[1] = DFA.finalStateOutput(stateID);
+    tmp[2] = "";
+    token.add(tmp);
 //    System.out.printf("token = %s, %s, finalState = %d\n", tokenBuilder.toString(),
 //        DFA.finalStateOutput(stateID), stateID);
 //    tokenList.add(tokenBuilder.toString());
@@ -169,10 +175,17 @@ public class CharStream {
   }
 
   public void tokenIdn2Keyword() {
-    for (Map.Entry<String, String> entry : token.entrySet()) {
-      if (entry.getValue().equals("IDN")) {
-        if (keyword.contains(entry.getKey())) {
-          token.put(entry.getKey(), "KEYWORD");
+//    for (Map.Entry<String, String> entry : token.entrySet()) {
+//      if (entry.getValue().equals("IDN")) {
+//        if (keyword.contains(entry.getKey())) {
+//          token.put(entry.getKey(), "KEYWORD");
+//        }
+//      }
+//    }
+    for(int i = 0; i < token.size(); i++) {
+      if(token.get(i)[1].equals("IDN")) {
+        if(keyword.contains(token.get(i)[0])) {
+          token.get(i)[1] = "KEYWORD";
         }
       }
     }
