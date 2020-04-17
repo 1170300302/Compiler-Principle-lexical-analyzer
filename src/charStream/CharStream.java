@@ -18,7 +18,6 @@ public class CharStream {
   private int currentPointer;
   private static List<Integer> haveProcessedPointer = new ArrayList<>();
   private Map<String, String> token = new HashMap<>();
-  private List<String> tokenList = new ArrayList<>();
   private List<String> errorList = new ArrayList<>();
   private List<String> keyword = new ArrayList<>();
 
@@ -153,7 +152,7 @@ public class CharStream {
     token.put(tokenBuilder.toString(), DFA.finalStateOutput(stateID));
 //    System.out.printf("token = %s, %s, finalState = %d\n", tokenBuilder.toString(),
 //        DFA.finalStateOutput(stateID), stateID);
-    tokenList.add(tokenBuilder.toString());
+//    tokenList.add(tokenBuilder.toString());
   }
 
   /**

@@ -22,19 +22,21 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Vector;
-
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
 public class CoreFrame extends JFrame {
 
   private String charStreamPath = ".\\src\\doc\\CharStream.txt";
+  JComboBox<String> fxSetComboBox;
   private JTable tokenTable;
+  private JTable setTable;
 
   public CoreFrame() {
     initial();
@@ -42,7 +44,7 @@ public class CoreFrame extends JFrame {
 
   private void initial() {
     setVisible(true);
-    setBounds(100, 100, 950, 750);
+    setBounds(100, 100, 850, 750);
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     setTitle("Compiler");
     setFont(new Font("Courier New", Font.PLAIN, 15));
@@ -103,55 +105,70 @@ public class CoreFrame extends JFrame {
     lexicalAnalysisButton.setFont(new Font("宋体", Font.PLAIN, 14));
     lexicalAnalysisButton.setBounds(155, 20, 100, 25);
     corePanel.add(lexicalAnalysisButton);
-    
+
     tokenTable = new JTable();
-    tokenTable.setModel(new DefaultTableModel(
-      new Object[][] {
-      },
-      new String[] {
-        "\u952E", "\u503C"
-      }
-    ));
+    tokenTable
+        .setModel(new DefaultTableModel(new Object[][] {}, new String[] {"\u952E", "\u503C"}));
     tokenTable.setFont(new Font("Courier New", Font.PLAIN, 13));
     JScrollPane tokenScrollPane = new JScrollPane();
     tokenScrollPane.setBounds(35, 345, 250, 360);
     corePanel.add(tokenScrollPane);
     tokenScrollPane.setViewportView(tokenTable);
-    
-    JTree parsingTree = new JTree();
-    parsingTree.setModel(new DefaultTreeModel(
-      new DefaultMutableTreeNode("P") {
-        {
-        }
+
+    JButton syntaxAnalysisButton = new JButton("\u8BED\u6CD5\u5206\u6790");
+    syntaxAnalysisButton.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        // 语法分析入口
       }
-    ));
+    });
+    syntaxAnalysisButton.setFont(new Font("宋体", Font.PLAIN, 14));
+    syntaxAnalysisButton.setBounds(275, 20, 100, 25);
+    corePanel.add(syntaxAnalysisButton);
+
+    fxSetComboBox = new JComboBox<String>();
+    fxSetComboBox.setMaximumRowCount(3);
+    fxSetComboBox
+        .setModel(new DefaultComboBoxModel<String>(new String[] {"FIRST", "FOLLOW", "FORECAST"}));
+    fxSetComboBox.setFont(new Font("Courier New", Font.PLAIN, 14));
+    fxSetComboBox.setBounds(395, 20, 100, 25);
+    corePanel.add(fxSetComboBox);
+
+    JTree parsingTree = new JTree();
+    parsingTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("P") {
+      {
+        DefaultMutableTreeNode node_1;
+        node_1 = new DefaultMutableTreeNode("a");
+        node_1.add(new DefaultMutableTreeNode("c"));
+        add(node_1);
+        node_1 = new DefaultMutableTreeNode("b");
+        node_1.add(new DefaultMutableTreeNode("d"));
+        node_1.add(new DefaultMutableTreeNode("e"));
+        add(node_1);
+      }
+    }));
     parsingTree.setFont(new Font("Courier New", Font.PLAIN, 13));
-    parsingTree.setBounds(295, 350, 250, 360);
+    parsingTree.setBounds(295, 55, 250, 280);
     corePanel.add(parsingTree);
-    
+
+    setTable = new JTable();
+    setTable.setModel(new DefaultTableModel(new Object[][] {}, new String[] {"\u952E", "\u503C"}));
+    setTable.setFont(new Font("Courier New", Font.PLAIN, 13));
+    JScrollPane setScrollPane = new JScrollPane();
+    setScrollPane.setBounds(295, 345, 250, 360);
+    corePanel.add(setScrollPane);
+    setScrollPane.setViewportView(setTable);
+
     JTextArea errorTextArea = new JTextArea();
     errorTextArea.setFont(new Font("Courier New", Font.PLAIN, 15));
     JScrollPane errorScroll = new JScrollPane(errorTextArea);
     errorScroll.setSize(250, 280);
-    errorScroll.setLocation(295, 55);
-    errorScroll
-        .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    errorScroll.setLocation(555, 55);
+    errorScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     errorScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
     corePanel.add(errorScroll);
-    
-    JButton syntaxAnalysisButton = new JButton("\u8BED\u6CD5\u5206\u6790");
-    syntaxAnalysisButton.setFont(new Font("宋体", Font.PLAIN, 14));
-    syntaxAnalysisButton.setBounds(275, 20, 100, 25);
-    corePanel.add(syntaxAnalysisButton);
-    
-    JComboBox fxSetComboBox = new JComboBox();
-    fxSetComboBox.setMaximumRowCount(3);
-    fxSetComboBox.setModel(new DefaultComboBoxModel(new String[] {"FIRST", "FOLLOW", "SELECT"}));
-    fxSetComboBox.setFont(new Font("Courier New", Font.PLAIN, 14));
-    fxSetComboBox.setBounds(395, 20, 100, 25);
-    corePanel.add(fxSetComboBox);
   }
-  
+
   public void setTokenTable(Map<String, String> token) {
     Vector<String> title = new Vector<>();
     title.add("键");
@@ -176,7 +193,7 @@ public class CoreFrame extends JFrame {
         case "OPERATOR":
 //          System.out.println(entry.getKey() + "\t\t\t" + "<" + entry.getKey() + ", _>");
           tmpVector.add(entry.getKey());
-          tmpVector.add(entry.getKey() + "," + " _");
+          tmpVector.add(entry.getKey() + "," + "_");
           break;
         default:
           System.out.println("Error");
@@ -187,6 +204,15 @@ public class CoreFrame extends JFrame {
     TableModel tokenTableModel = new DefaultTableModel(tableData, title);
     tokenTable.setModel(tokenTableModel);
   }
+
+  public void setErrorTextArea() {
+
+  }
+
+  public void setParsingTree() {
+
+  }
+
 }
 
 

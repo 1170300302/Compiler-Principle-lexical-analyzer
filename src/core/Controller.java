@@ -1,6 +1,7 @@
 package core;
 
 import java.awt.EventQueue;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
@@ -11,7 +12,7 @@ import errorHandling.ErrorHandling;
 import ui.CoreFrame;
 
 public class Controller {
-  
+
   private static CoreFrame coreFrame;
 
   public static void main(String[] args) {
@@ -23,7 +24,7 @@ public class Controller {
       public void run() {
         try {
           JFrame.setDefaultLookAndFeelDecorated(true);
-          //UIManager.setLookAndFeel("com.jtattoo.plaf.mint.MintLookAndFeel");
+          // UIManager.setLookAndFeel("com.jtattoo.plaf.mint.MintLookAndFeel");
           UIManager.setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
           coreFrame = new CoreFrame();
         } catch (Exception e) {
@@ -74,8 +75,7 @@ public class Controller {
       charStream.moveTo(errorHandlingRes[0] + 1);
 //      if (charStream.checkEnd())
 //        System.out.printf("cahr -> %c\n", charStream.characterStream.get(errorHandlingRes[0] + 1));
-    }
-    else {
+    } else {
       charStream.outputErrorMessage();
       charStream.move(dfa.getCurrentStateID());
     }
