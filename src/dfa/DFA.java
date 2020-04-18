@@ -55,7 +55,7 @@ public class DFA {
   }
 
   private static void setFinalStateAndInfoMap() {
-    finalStateAndInfoMap.put(20, "IDN");
+    finalStateAndInfoMap.put(20, "id");
     finalStateAndInfoMap.put(24, "BOUNDARY");
     finalStateAndInfoMap.put(34, "NOTES");
     finalStateAndInfoMap.put(35, "OPERATOR");

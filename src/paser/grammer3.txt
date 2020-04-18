@@ -1,0 +1,59 @@
+P->D
+P->S
+S->A R
+R->S R
+R->$
+A->$
+D->F G
+D->proc id ; DS
+D->T id;
+G->D G
+G->$
+F->$
+T->X C
+T->record D
+X->integer
+X->real
+C->[ num ] C
+C->$
+S->id = E ;
+S->L = E ;
+E->H U
+E->- E
+E->( E )
+E->id
+E->digit
+E->L
+U->+ E
+U->* E
+H->id
+H->digit
+H->L
+L->id [ E ] J
+J->[ E ] J
+J->$
+S->if B then K V
+S->while B do K
+V->else M
+V->$
+B->Q W
+B->not B
+B->( B )
+B->E relop E
+B->true
+B->false
+Q->E relop E
+Q->true
+Q->false
+W->or B
+W->and B
+relop->< N
+relop->==
+relop->!=
+relop->> N
+N->=
+N->$
+S->call id ( Elist )
+Elist->E Y
+Y->, Elist
+Y->$

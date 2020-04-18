@@ -7,6 +7,8 @@ import javax.swing.JTable;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import core.Controller;
+import paser.AnalyzeLL;
+
 import java.awt.Font;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
@@ -22,6 +24,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +49,8 @@ public class CoreFrame extends JFrame {
   private String charStreamPath = ".\\src\\doc\\CharStream.txt";
   private JTable tokenTable;
   private JTable setTable;
-  private Map<Character, Set<Character>> first = new HashMap<>();
-  private Map<Character, Set<Character>> follow = new HashMap<>();
+  private Map<String, Set<String>> first = new HashMap<>();
+  private Map<String, Set<String>> follow = new HashMap<>();
   private String[][] forecast = new String[0][0];
   private JTextArea errorTextArea;
   private JTree parsingTree;
@@ -133,7 +136,7 @@ public class CoreFrame extends JFrame {
     syntaxAnalysisButton.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent e) {
-        // 语法分析入口
+        AnalyzeLL.syntaxAnalysis();
       }
     });
     syntaxAnalysisButton.setFont(new Font("宋体", Font.PLAIN, 14));
@@ -182,7 +185,7 @@ public class CoreFrame extends JFrame {
     setTable.setModel(new DefaultTableModel(new Object[][] {}, new String[] {"\u952E", "\u503C"}));
     setTable.setFont(new Font("Courier New", Font.PLAIN, 13));
     JScrollPane setScrollPane = new JScrollPane();
-    setScrollPane.setBounds(295, 345, 250, 360);
+    setScrollPane.setBounds(295, 345, 510, 360);
     corePanel.add(setScrollPane);
     setScrollPane.setViewportView(setTable);
 
@@ -206,7 +209,7 @@ public class CoreFrame extends JFrame {
       Vector<Object> tmpVector = new Vector<>();
       String[] tmpStrings = new String[3];
       switch (token.get(i)[1]) {
-        case "IDN":
+        case "id":
         case "CONST":
         case "NOTES":
         case "CHARCONST":
@@ -246,15 +249,15 @@ public class CoreFrame extends JFrame {
     return new ArrayList<>(resToken);
   }
 
-  public void setSet(Map<Character, Set<Character>> first, Map<Character, Set<Character>> follow,
+  public void setSet(HashMap<String, HashSet<String>> firstSet, HashMap<String, HashSet<String>> followSet,
       String[][] forecast) {
-    this.first = new HashMap<>(first);
-    this.follow = new HashMap<>(follow);
+    this.first = new HashMap<>(firstSet);
+    this.follow = new HashMap<>(followSet);
     this.forecast = forecast;// 此处没有防止表示暴露
   }
 
   private void setFirstOrFollow(int flag) {
-    Map<Character, Set<Character>> set;
+    Map<String, Set<String>> set;
     if (flag == 0) {
       set = first;
     } else {
@@ -264,7 +267,7 @@ public class CoreFrame extends JFrame {
     title.add("键");
     title.add("值");
     Vector<Vector<Object>> tableData = new Vector<Vector<Object>>();
-    for (Entry<Character, Set<Character>> entry : set.entrySet()) {
+    for (Entry<String, Set<String>> entry : set.entrySet()) {
       Vector<Object> tmpVector = new Vector<>();
       tmpVector.add(entry.getKey());
       tmpVector.add(entry.getValue());
@@ -277,11 +280,37 @@ public class CoreFrame extends JFrame {
   private void setForecast() {
     Vector<String> title = new Vector<>();
     Vector<Vector<Object>> tableData = new Vector<Vector<Object>>();
-    title.add("1");
-    title.add("2");
-    title.add("3");
-    for (int i = 0; i < forecast.length; i++) {
+    for(int i = 0; i < forecast[0].length; i++) {
+      title.add(forecast[0][i]);
+    }
+//    title.add("");
+//    title.add("$");
+//    title.add("(");
+//    title.add(")");
+//    title.add("*");
+//    title.add("id");
+//    title.add("+");
+    for (int i = 1; i < forecast.length; i++) {
       Vector<Object> tmpVector = new Vector<>();
+      switch (i) {
+        case 0:
+          tmpVector.add("T");
+          break;
+        case 1:
+          tmpVector.add("E");
+          break;
+        case 2:
+          tmpVector.add("F");
+          break;
+        case 3:
+          tmpVector.add("E1");
+          break;
+        case 4:
+          tmpVector.add("T1");
+          break;
+        default:
+          break;
+      }
       for (int j = 0; j < forecast[i].length; j++) {
         tmpVector.add(forecast[i][j]);
       }
@@ -298,25 +327,26 @@ public class CoreFrame extends JFrame {
     }
   }
 
-  public void setParsingTree(Map<String, List<String>> parsingTreeMap) {
+  public void setParsingTree(HashMap<String, ArrayList<String>> analyzeTree) {
+    String root = "E";
     Map<String, DefaultMutableTreeNode> parsingTreeNode = new HashMap<>();
-    for (Entry<String, List<String>> entry : parsingTreeMap.entrySet()) {
+    for (Entry<String, ArrayList<String>> entry : analyzeTree.entrySet()) {
       parsingTreeNode.put(entry.getKey(), new DefaultMutableTreeNode(entry.getKey()));
     }
     Queue<String> treeQueue = new LinkedList<>();
-    treeQueue.offer("P");
+    treeQueue.offer(root);
     String currentNode;
     while (!treeQueue.isEmpty()) {
       currentNode = treeQueue.poll();
-      if (parsingTreeMap.get(currentNode) != null) {
-        for (int i = 0; i < parsingTreeMap.get(currentNode).size(); i++) {
-          treeQueue.offer(parsingTreeMap.get(currentNode).get(i));
+      if (analyzeTree.get(currentNode) != null) {
+        for (int i = 0; i < analyzeTree.get(currentNode).size(); i++) {
+          treeQueue.offer(analyzeTree.get(currentNode).get(i));
           parsingTreeNode.get(currentNode)
-              .add(parsingTreeNode.get(parsingTreeMap.get(currentNode).get(i)));
+              .add(parsingTreeNode.get(analyzeTree.get(currentNode).get(i)));
         }
       }
     }
-    TreeModel parsingTreeModel = new DefaultTreeModel(parsingTreeNode.get("P"));
+    TreeModel parsingTreeModel = new DefaultTreeModel(parsingTreeNode.get(root));
     parsingTree.setModel(parsingTreeModel);
   }
 

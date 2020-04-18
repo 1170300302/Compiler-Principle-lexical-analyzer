@@ -15,7 +15,7 @@ public class CharStream {
   public List<Integer> characterStreamState = new ArrayList<>();
   private int currentPointer;
   private static List<Integer> haveProcessedPointer = new ArrayList<>();
-  private List<String[]> token = new ArrayList<>();
+  private static List<String[]> token = new ArrayList<>();
   private List<String> errorList = new ArrayList<>();
   private List<String> keyword = new ArrayList<>();
 
@@ -43,12 +43,12 @@ public class CharStream {
     return this.currentPointer;
   }
 
-  public List<String[]> getToken() {
+  public static List<String[]> getToken() {
     return new ArrayList<>(token);
   }
 
   public void setToken(List<String[]> token) {
-    this.token = new ArrayList<>(token);
+    CharStream.token = new ArrayList<>(token);
   }
 
   public void setCharacterStreamState(int index) {
@@ -64,6 +64,7 @@ public class CharStream {
    */
   public CharStream(String filePath) {
     haveProcessedPointer = new ArrayList<>();
+    token = new ArrayList<>();
     try {
       BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
       String line = "";
