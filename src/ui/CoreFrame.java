@@ -292,25 +292,25 @@ public class CoreFrame extends JFrame {
 //    title.add("+");
     for (int i = 1; i < forecast.length; i++) {
       Vector<Object> tmpVector = new Vector<>();
-      switch (i) {
-        case 0:
-          tmpVector.add("T");
-          break;
-        case 1:
-          tmpVector.add("E");
-          break;
-        case 2:
-          tmpVector.add("F");
-          break;
-        case 3:
-          tmpVector.add("E1");
-          break;
-        case 4:
-          tmpVector.add("T1");
-          break;
-        default:
-          break;
-      }
+//      switch (i) {
+//        case 0:
+//          tmpVector.add("T");
+//          break;
+//        case 1:
+//          tmpVector.add("E");
+//          break;
+//        case 2:
+//          tmpVector.add("F");
+//          break;
+//        case 3:
+//          tmpVector.add("E1");
+//          break;
+//        case 4:
+//          tmpVector.add("T1");
+//          break;
+//        default:
+//          break;
+//      }
       for (int j = 0; j < forecast[i].length; j++) {
         tmpVector.add(forecast[i][j]);
       }
