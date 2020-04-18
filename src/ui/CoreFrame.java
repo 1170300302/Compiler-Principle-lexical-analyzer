@@ -21,22 +21,36 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Queue;
+import java.util.Set;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class CoreFrame extends JFrame {
 
   private String charStreamPath = ".\\src\\doc\\CharStream.txt";
-  JComboBox<String> fxSetComboBox;
   private JTable tokenTable;
   private JTable setTable;
+  private Map<Character, Set<Character>> first = new HashMap<>();
+  private Map<Character, Set<Character>> follow = new HashMap<>();
+  private String[][] forecast = new String[0][0];
+  private JTextArea errorTextArea;
+  private JTree parsingTree;
 
   public CoreFrame() {
     initial();
@@ -126,7 +140,24 @@ public class CoreFrame extends JFrame {
     syntaxAnalysisButton.setBounds(275, 20, 100, 25);
     corePanel.add(syntaxAnalysisButton);
 
-    fxSetComboBox = new JComboBox<String>();
+    JComboBox<String> fxSetComboBox = new JComboBox<String>();
+    fxSetComboBox.addItemListener(new ItemListener() {
+      public void itemStateChanged(ItemEvent e) {
+        switch (fxSetComboBox.getSelectedItem().toString()) {
+          case "FIRST":
+            setFirstOrFollow(0);
+            break;
+          case "FOLLOW":
+            setFirstOrFollow(1);
+            break;
+          case "FORECAST":
+            setForecast();
+            break;
+          default:
+            break;
+        }
+      }
+    });
     fxSetComboBox.setMaximumRowCount(3);
     fxSetComboBox
         .setModel(new DefaultComboBoxModel<String>(new String[] {"FIRST", "FOLLOW", "FORECAST"}));
@@ -134,21 +165,17 @@ public class CoreFrame extends JFrame {
     fxSetComboBox.setBounds(395, 20, 100, 25);
     corePanel.add(fxSetComboBox);
 
-    JTree parsingTree = new JTree();
+    parsingTree = new JTree();
     parsingTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("P") {
-      {
-        DefaultMutableTreeNode node_1;
-        node_1 = new DefaultMutableTreeNode("a");
-        node_1.add(new DefaultMutableTreeNode("c"));
-        add(node_1);
-        node_1 = new DefaultMutableTreeNode("b");
-        node_1.add(new DefaultMutableTreeNode("d"));
-        node_1.add(new DefaultMutableTreeNode("e"));
-        add(node_1);
-      }
+      {}
     }));
     parsingTree.setFont(new Font("Courier New", Font.PLAIN, 13));
     parsingTree.setBounds(295, 55, 250, 280);
+    DefaultTreeCellRenderer render = new DefaultTreeCellRenderer();
+    render.setOpenIcon(null);
+    render.setClosedIcon(null);
+    render.setLeafIcon(null);
+    parsingTree.setCellRenderer(render);
     corePanel.add(parsingTree);
 
     setTable = new JTable();
@@ -159,7 +186,7 @@ public class CoreFrame extends JFrame {
     corePanel.add(setScrollPane);
     setScrollPane.setViewportView(setTable);
 
-    JTextArea errorTextArea = new JTextArea();
+    errorTextArea = new JTextArea();
     errorTextArea.setFont(new Font("Courier New", Font.PLAIN, 15));
     JScrollPane errorScroll = new JScrollPane(errorTextArea);
     errorScroll.setSize(250, 280);
@@ -219,12 +246,78 @@ public class CoreFrame extends JFrame {
     return new ArrayList<>(resToken);
   }
 
-  public void setErrorTextArea() {
-
+  public void setSet(Map<Character, Set<Character>> first, Map<Character, Set<Character>> follow,
+      String[][] forecast) {
+    this.first = new HashMap<>(first);
+    this.follow = new HashMap<>(follow);
+    this.forecast = forecast;// 此处没有防止表示暴露
   }
 
-  public void setParsingTree() {
+  private void setFirstOrFollow(int flag) {
+    Map<Character, Set<Character>> set;
+    if (flag == 0) {
+      set = first;
+    } else {
+      set = follow;
+    }
+    Vector<String> title = new Vector<>();
+    title.add("键");
+    title.add("值");
+    Vector<Vector<Object>> tableData = new Vector<Vector<Object>>();
+    for (Entry<Character, Set<Character>> entry : set.entrySet()) {
+      Vector<Object> tmpVector = new Vector<>();
+      tmpVector.add(entry.getKey());
+      tmpVector.add(entry.getValue());
+      tableData.add(tmpVector);
+    }
+    TableModel setTableModel = new DefaultTableModel(tableData, title);
+    setTable.setModel(setTableModel);
+  }
 
+  private void setForecast() {
+    Vector<String> title = new Vector<>();
+    Vector<Vector<Object>> tableData = new Vector<Vector<Object>>();
+    title.add("1");
+    title.add("2");
+    title.add("3");
+    for (int i = 0; i < forecast.length; i++) {
+      Vector<Object> tmpVector = new Vector<>();
+      for (int j = 0; j < forecast[i].length; j++) {
+        tmpVector.add(forecast[i][j]);
+      }
+      tableData.add(tmpVector);
+    }
+    TableModel setTableModel = new DefaultTableModel(tableData, title);
+    setTable.setModel(setTableModel);
+  }
+
+  public void setErrorTextArea(List<String> errorText) {
+    errorTextArea.setText("");
+    for (int i = 0; i < errorText.size(); i++) {
+      errorTextArea.append(errorText.get(i) + "\n");
+    }
+  }
+
+  public void setParsingTree(Map<String, List<String>> parsingTreeMap) {
+    Map<String, DefaultMutableTreeNode> parsingTreeNode = new HashMap<>();
+    for (Entry<String, List<String>> entry : parsingTreeMap.entrySet()) {
+      parsingTreeNode.put(entry.getKey(), new DefaultMutableTreeNode(entry.getKey()));
+    }
+    Queue<String> treeQueue = new LinkedList<>();
+    treeQueue.offer("P");
+    String currentNode;
+    while (!treeQueue.isEmpty()) {
+      currentNode = treeQueue.poll();
+      if (parsingTreeMap.get(currentNode) != null) {
+        for (int i = 0; i < parsingTreeMap.get(currentNode).size(); i++) {
+          treeQueue.offer(parsingTreeMap.get(currentNode).get(i));
+          parsingTreeNode.get(currentNode)
+              .add(parsingTreeNode.get(parsingTreeMap.get(currentNode).get(i)));
+        }
+      }
+    }
+    TreeModel parsingTreeModel = new DefaultTreeModel(parsingTreeNode.get("P"));
+    parsingTree.setModel(parsingTreeModel);
   }
 
 }

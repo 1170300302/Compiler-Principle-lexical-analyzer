@@ -46,7 +46,7 @@ public class CharStream {
   public List<String[]> getToken() {
     return new ArrayList<>(token);
   }
-  
+
   public void setToken(List<String[]> token) {
     this.token = new ArrayList<>(token);
   }
@@ -169,7 +169,8 @@ public class CharStream {
   public void outputErrorMessage() {
     if (checkNull() && getCurrentCharacter() != ' ') {
 //      System.out.printf("There's an unexpected error at %c\n", getCurrentCharacter());
-      errorList.add("There's an unexpected error at " + getCurrentPointer() + ": " + getCurrentCharacter());
+      errorList.add(
+          "There's an unexpected error at " + getCurrentPointer() + ": " + getCurrentCharacter());
     }
     haveProcessedPointer.add(currentPointer);
   }
@@ -182,9 +183,9 @@ public class CharStream {
 //        }
 //      }
 //    }
-    for(int i = 0; i < token.size(); i++) {
-      if(token.get(i)[1].equals("IDN")) {
-        if(keyword.contains(token.get(i)[0])) {
+    for (int i = 0; i < token.size(); i++) {
+      if (token.get(i)[1].equals("IDN")) {
+        if (keyword.contains(token.get(i)[0])) {
           token.get(i)[1] = "KEYWORD";
         }
       }

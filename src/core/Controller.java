@@ -1,6 +1,13 @@
 package core;
 
 import java.awt.EventQueue;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import charStream.CharStream;
@@ -47,6 +54,33 @@ public class Controller {
     }
     charStream.tokenIdn2Keyword();
     charStream.setToken(coreFrame.setTokenTable(charStream.getToken()));
+    Map<Character, Set<Character>> tmpMap = new HashMap<>();
+    Set<Character> tmpSet = new HashSet<>();
+    tmpSet.add('1');
+    tmpSet.add('2');
+    tmpMap.put('a', tmpSet);
+    String[][] tmpStrings = new String[2][3];
+    for (int i = 0; i < tmpStrings.length; i++) {
+      for (int j = 0; j < tmpStrings[i].length; j++) {
+        tmpStrings[i][j] = i + "->" + j;
+      }
+    }
+    List<String> errorText = new ArrayList<>();
+    errorText.add("aaa");
+    errorText.add("bbb");
+    Map<String, List<String>> parsingTreeMap = new HashMap<>();
+    parsingTreeMap.put("P", Arrays.asList("a", "b", "c"));
+    parsingTreeMap.put("a", Arrays.asList("1"));
+    parsingTreeMap.put("b", Arrays.asList("2"));
+    parsingTreeMap.put("c", Arrays.asList("3", "4"));
+    parsingTreeMap.put("1", null);
+    parsingTreeMap.put("2", null);
+    parsingTreeMap.put("3", Arrays.asList("5"));
+    parsingTreeMap.put("4", null);
+    parsingTreeMap.put("5", null);
+    coreFrame.setSet(tmpMap, tmpMap, tmpStrings);
+    coreFrame.setErrorTextArea(errorText);
+    coreFrame.setParsingTree(parsingTreeMap);
 //    output(charStream);
   }
 
