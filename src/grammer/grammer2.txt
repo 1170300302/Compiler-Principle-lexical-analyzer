@@ -1,0 +1,63 @@
+Start->P
+P->D P
+P->S P
+P->epsilon
+D->proc X id ( M ) { P } 
+D->record id { P }
+D->T id A ;
+A->= F A 
+A->, id A 
+A->epsilon
+M->X id M_
+M_->, X id M_ 
+M_->epsilon
+T->X C
+X->int
+X->float
+X->bool
+X->char
+C->[ num ] C 
+C->epsilon
+S->MachedS
+S->OpenS
+MachedS->if ( B ) MachedS else MachedS
+MachedS->L = E ; 
+MachedS->call id ( Elist ) ;
+MachedS->return E ;
+MachedS->do S while ( B ) ;
+OpenS->if ( B ) S 
+OpenS->if ( B ) MachedS else OpenS
+B->H B_
+B_->|| H B_ 
+B_->epsilon
+H->I H_
+H_->&& I H_ 
+H_->epsilon
+I->! I 
+I->( B )
+I->E Relop E
+I->true
+I->false
+Relop-><
+Relop-><=
+Relop->>
+Relop->>=
+Relop->==
+Relop->!=
+Elist->E Elist_
+Elist_->, E Elist_
+Elist_->epsilon
+L->id L_
+L_->[ num ] L_
+L_->epsilon
+E->G E_
+E_->+ G E_
+E_->epsilon
+G->F G_
+G_->* F G_
+G_->epsilon
+F->( E )
+F->num
+F->id
+F->real
+F->string

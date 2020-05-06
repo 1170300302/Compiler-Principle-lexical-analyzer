@@ -185,7 +185,7 @@ public class CharStream {
 //      }
 //    }
     for (int i = 0; i < token.size(); i++) {
-      if (token.get(i)[1].equals("IDN")) {
+      if (token.get(i)[1].equals("id")) {
         if (keyword.contains(token.get(i)[0])) {
           token.get(i)[1] = "KEYWORD";
         }

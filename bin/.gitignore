@@ -1,6 +1,3 @@
 /ui/
-/core/
-/doc/
 /paser/
-/charStream/
-/dfa/
+/stackElement/

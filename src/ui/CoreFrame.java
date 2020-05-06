@@ -210,11 +210,10 @@ public class CoreFrame extends JFrame {
       String[] tmpStrings = new String[3];
       switch (token.get(i)[1]) {
         case "id":
-        case "CONST":
+        case "num":
         case "NOTES":
         case "CHARCONST":
-        case "OCT":
-        case "HEX":
+        case "real":
 //          System.out.println(
 //              entry.getKey() + "\t\t\t" + "<" + entry.getValue() + ", " + entry.getKey() + ">");
 //          tmpVector.add(entry.getKey());

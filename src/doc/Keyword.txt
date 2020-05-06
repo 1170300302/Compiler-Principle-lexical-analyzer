@@ -1,1 +1,1 @@
-return,char,bool,short,int,long,float,double,unsigned,do,while,for,if,else,swich,true,false
+string,bool,num,do,float,while,else,record,id,if,proc,false,real,int,call,true,char,return

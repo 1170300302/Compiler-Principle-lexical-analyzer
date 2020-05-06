@@ -82,12 +82,12 @@ public class DFA {
     finalStateAndInfoMap.put(56, "OPERATOR");
     finalStateAndInfoMap.put(57, "OPERATOR");
     finalStateAndInfoMap.put(62, "CHARCONST");
-    finalStateAndInfoMap.put(77, "CONST");
-    finalStateAndInfoMap.put(78, "CONST");
-    finalStateAndInfoMap.put(79, "CONST");
-    finalStateAndInfoMap.put(80, "CONST");
-    finalStateAndInfoMap.put(81, "OCT");
-    finalStateAndInfoMap.put(83, "HEX");
+    finalStateAndInfoMap.put(77, "num");
+    finalStateAndInfoMap.put(78, "num");
+    finalStateAndInfoMap.put(79, "num");
+    finalStateAndInfoMap.put(80, "num");
+    finalStateAndInfoMap.put(81, "real");
+    finalStateAndInfoMap.put(83, "real");
   }
 
   /**
