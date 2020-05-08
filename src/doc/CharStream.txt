@@ -1,11 +1,16 @@
-int main()
-{
-    int a = [1];
-    int b = a + 0x123 + 0234 + 'x';/*b = a + 1*/
-    float f = 0x12G;
-    /*a
-    d*/
-    if(a)
-    else
-    return;
+int x;
+int a;
+int b;
+int i;
+int[2][3] z;
+a = 1;
+b = 2;
+x = a * b;
+i = 3;
+z[0][0] = i;
+while (a < b)
+do {
+if (x < i) 
+x = a + b;
+else x = a - b;
 }

@@ -8,9 +8,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Stack;
-
 import charStream.CharStream;
 import core.Controller;
+import stackElement.Action;
+import stackElement.Self;
+import stackElement.StackBase;
 
 public class AnalyzeLL {
 
@@ -22,9 +24,10 @@ public class AnalyzeLL {
   protected static HashSet<String> vnSet = new HashSet<>(); /* 非终结符的集合 */
   protected static String start = "Start"; /* 文法开始符号 */
   protected static String[][] table; /* 预测分析表 */
-  protected Stack<String> analyzeStack = new Stack<>();/* 分析栈 */
+  protected Stack<StackBase> analyzeStack = new Stack<>();/* 分析栈 */
   protected String action = "";
   protected static HashMap<String, ArrayList<String>> analyzeTree = new HashMap<>();/* 分析树所需 */
+  protected static List<String> errorText = new ArrayList<>();
 
   public void getGrammerFile(String file) {
     try {
@@ -128,7 +131,7 @@ public class AnalyzeLL {
     for (int i = 0; i < vnArray.length; i++) {
       for (int j = 0; j < vtArray.length; j++) {
         if (f.followSet.get(table[i + 1][0]).contains(table[0][j + 1])
-            && (!table[i + 1][j + 1].equals("epsilon")))
+            && table[i + 1][j + 1].equals("error"))
           table[i + 1][j + 1] = "synch";
       }
     }
@@ -166,43 +169,44 @@ public class AnalyzeLL {
   }
 
   public void analyzeLL(List<String[]> token) {
-    analyzeStack.push("$");
-    analyzeStack.push(start);
+    analyzeStack.push(new Self("$"));
+    analyzeStack.push(new Self(start));
     pointer = 0;
-    String X = analyzeStack.peek();
-    while (!X.equals("$")) {
+    StackBase X = analyzeStack.peek();
+    String actionSymbol = "a";
+    while (!X.getSymbol().equals("$")) {
       String c = token.get(pointer)[1];
-      String father = X;
-      ArrayList<String> son;
-      if (X.equals(c)) { //
-        son = null;
+      if (X.getSymbol().equals(c)) {
+        Self addSelf = (Self) X;
+        addSelf.addSystemLexeme(addSelf.getSymbol(), c);
         analyzeStack.pop();
         pointer++;
-        analyzeTree.put(father, son);
-      } else if (find(X, c).equals("error")) {
+      } else if (find(X.getSymbol(), c).startsWith(actionSymbol)) {
+        Action exeAction = (Action) X;
+        exeAction.executionMethod();
+        analyzeStack.pop();
+      } else if (find(X.getSymbol(), c).equals("error")) {
         pointer++;
-      } else if (find(X, c).equals("synch")) {
+      } else if (find(X.getSymbol(), c).equals("synch")) {
         analyzeStack.pop();
-      } else if (find(X, c).equals("epsilon")) {
+      } else if (find(X.getSymbol(), c).equals("epsilon")) {
         analyzeStack.pop();
-        son = new ArrayList<String>();
-        son.add("epsilon");
-        analyzeTree.put(father, son);
       } else {
-        String str = find(X, c);
+        String str = find(X.getSymbol(), c);
         if (str != "") {
           analyzeStack.pop();
           String[] strings = str.split("\\s+");
           int len = strings.length;
-          son = new ArrayList<>();
           for (int i = len - 1; i >= 0; i--) {
-            analyzeStack.push(strings[i]);
-            son.add(strings[i]);
+            if (strings[i].startsWith(actionSymbol)) {
+              analyzeStack.push(new Action(strings[i]));
+            } else {
+              analyzeStack.push(new Self(strings[i]));
+            }
           }
-          analyzeTree.put(father, son);
         } else {
-          System.out.println("error at" + token.get(pointer)[0] + "in" + pointer);
-          return;
+          errorText.add("error at " + token.get(pointer)[0] + " in " + pointer);
+          pointer++;
         }
       }
       X = analyzeStack.peek();
@@ -216,9 +220,17 @@ public class AnalyzeLL {
     FirstAndFollow f = new FirstAndFollow();
     ll.Init(f);
     ll.createTable(f);
-    ll.analyzeLL(CharStream.getToken());
+    for (int i = 0; i < table.length; i++) {
+      for (int j = 0; j < table[i].length; j++) {
+        System.out.print(table[i][j] + "\t");
+      }
+      System.out.println();
+    }
     Controller.getCoreFrame().setSet(f.firstSet, f.followSet, table);
-    Controller.getCoreFrame().setParsingTree(analyzeTree);
+    ll.analyzeLL(CharStream.getToken());
+    Controller.getCoreFrame().setErrorTextArea(errorText);
+//    Controller.getCoreFrame().setParsingTree(analyzeTree);
+//    System.out.println("OK");
   }
 
   public static void main(String[] argc) {

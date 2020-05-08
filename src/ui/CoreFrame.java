@@ -169,9 +169,12 @@ public class CoreFrame extends JFrame {
     corePanel.add(fxSetComboBox);
 
     parsingTree = new JTree();
-    parsingTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("P") {
-      {}
-    }));
+    parsingTree.setModel(new DefaultTreeModel(
+      new DefaultMutableTreeNode("Start") {
+        {
+        }
+      }
+    ));
     parsingTree.setFont(new Font("Courier New", Font.PLAIN, 13));
     parsingTree.setBounds(295, 55, 250, 280);
     DefaultTreeCellRenderer render = new DefaultTreeCellRenderer();
@@ -327,11 +330,12 @@ public class CoreFrame extends JFrame {
   }
 
   public void setParsingTree(HashMap<String, ArrayList<String>> analyzeTree) {
-    String root = "E";
+    String root = "Start";
     Map<String, DefaultMutableTreeNode> parsingTreeNode = new HashMap<>();
     for (Entry<String, ArrayList<String>> entry : analyzeTree.entrySet()) {
       parsingTreeNode.put(entry.getKey(), new DefaultMutableTreeNode(entry.getKey()));
     }
+    parsingTreeNode.put("epsilon", new DefaultMutableTreeNode("epsilon"));
     Queue<String> treeQueue = new LinkedList<>();
     treeQueue.offer(root);
     String currentNode;
