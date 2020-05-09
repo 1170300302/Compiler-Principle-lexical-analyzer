@@ -1,6 +1,8 @@
 package stackElement;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ValueBuffer {
@@ -8,6 +10,9 @@ public class ValueBuffer {
 //  private static Map<String, List<String>> inhe = new HashMap<>();
 //  private static List<String> syne = new ArrayList<>();
   private static Map<String, String> valueBuffer = new HashMap<>();
+  private static Map<String, String[]> symbolTable = new HashMap<>();
+  private static List<String[]> quaternion = new ArrayList<>();
+  private static int addressCount = 1;
 
 //  public static void initInhe(String pathName) {
 //    try {
@@ -52,6 +57,32 @@ public class ValueBuffer {
 
   public static String getValueBufferValue(String valueKey) {
     return valueBuffer.get(valueKey);
+  }
+
+  public static void addSymbolTable(String valueKey, String valueType, String valueOffset) {
+    symbolTable.put(valueKey, new String[] {valueType, valueOffset});
+  }
+
+  public static String getSymbolTableType(String valueKey) {
+    return symbolTable.get(valueKey)[0];
+  }
+
+  public static String getSymbolTableOffset(String valueKey) {
+    return symbolTable.get(valueKey)[1];
+  }
+
+  public static void addQuaternion(String q1, String q2, String q3, String q4) {
+    quaternion.add(new String[] {q1, q2, q3, q4});
+  }
+
+  public static List<String[]> getQuaternion() {
+    return new ArrayList<>(quaternion);
+  }
+
+  public static String newTemp() {
+    String res = "t" + addressCount;
+    addressCount += 1;
+    return res;
   }
 
 }

@@ -8,9 +8,15 @@ b = 2;
 x = a * b;
 i = 3;
 z[0][0] = i;
-while (a < b)
-do {
-if (x < i) 
-x = a + b;
-else x = a - b;
+while (a < b) {
+    if (x > i) {
+        x = a + b;
+    }
+    else {
+        x = a - b;
+    }
 }
+proc int prog (int p) {
+    int f = 1;
+}
+call prog (a);

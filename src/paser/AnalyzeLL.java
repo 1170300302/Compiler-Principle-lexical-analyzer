@@ -13,6 +13,7 @@ import core.Controller;
 import stackElement.Action;
 import stackElement.Self;
 import stackElement.StackBase;
+import stackElement.ValueBuffer;
 
 public class AnalyzeLL {
 
@@ -20,6 +21,7 @@ public class AnalyzeLL {
   protected ArrayList<Integer> lineOrder; /* 记录每个输入字符的行号 */
   protected int pointer; /* 输入字符流的指针 */
   protected static HashMap<String, ArrayList<ArrayList<String>>> grammer = new HashMap<>();
+  protected static HashMap<String, ArrayList<ArrayList<String>>> grammer_new = new HashMap<>();
   protected static HashSet<String> vtSet = new HashSet<>(); /* 终结符的集合 */
   protected static HashSet<String> vnSet = new HashSet<>(); /* 非终结符的集合 */
   protected static String start = "Start"; /* 文法开始符号 */
@@ -29,7 +31,7 @@ public class AnalyzeLL {
   protected static HashMap<String, ArrayList<String>> analyzeTree = new HashMap<>();/* 分析树所需 */
   protected static List<String> errorText = new ArrayList<>();
 
-  public void getGrammerFile(String file) {
+  public void getGrammerFile(String file, HashMap<String, ArrayList<ArrayList<String>>> grammer1) {
     try {
       FileReader fr = new FileReader(file);
       BufferedReader br = new BufferedReader(fr);
@@ -38,13 +40,13 @@ public class AnalyzeLL {
         String[] str = line.split("->");
         String left = str[0];
         ArrayList<ArrayList<String>> right =
-            grammer.containsKey(left) ? grammer.get(left) : new ArrayList<>();
+            grammer1.containsKey(left) ? grammer1.get(left) : new ArrayList<>();
         ArrayList<String> list = new ArrayList<>();
         for (String s : str[1].split(" ")) {
           list.add(s);
         }
         right.add(list);
-        grammer.put(left, right);
+        grammer1.put(left, right);
         line = br.readLine();
       }
       br.close();
@@ -112,18 +114,19 @@ public class AnalyzeLL {
     }
     for (String A : vnSet) {
       ArrayList<ArrayList<String>> production = grammer.get(A);
+      ArrayList<ArrayList<String>> production_new = grammer_new.get(A);
       for (int i = 0; i < production.size(); i++) {
         HashSet<String> set = f.firstSetX.get(production.get(i));
         for (String str : set) {
-          insert(A, str, production.get(i).toString());
+          insert(A, str, production_new.get(i).toString());
         }
         if (set.contains("epsilon")) {
           HashSet<String> setFollow = f.followSet.get(A);
           if (setFollow.contains("epsilon")) {
-            insert(A, "epsilon", production.get(i).toString());
+            insert(A, "epsilon", production_new.get(i).toString());
           }
           for (String str : setFollow) {
-            insert(A, str, production.get(i).toString());
+            insert(A, str, production_new.get(i).toString());
           }
         }
       }
@@ -135,7 +138,6 @@ public class AnalyzeLL {
           table[i + 1][j + 1] = "synch";
       }
     }
-
   }
 
   public void insert(String X, String a, String s) {
@@ -215,7 +217,8 @@ public class AnalyzeLL {
 
   public static void syntaxAnalysis() {
     AnalyzeLL ll = new AnalyzeLL();
-    ll.getGrammerFile("src/grammer/grammer2.txt");
+    ll.getGrammerFile("src/grammer/grammer2.txt", grammer);
+    ll.getGrammerFile("src/grammer/grammer3a.txt", grammer_new);
     ll.getVnVt();
     FirstAndFollow f = new FirstAndFollow();
     ll.Init(f);
@@ -229,6 +232,8 @@ public class AnalyzeLL {
     Controller.getCoreFrame().setSet(f.firstSet, f.followSet, table);
     ll.analyzeLL(CharStream.getToken());
     Controller.getCoreFrame().setErrorTextArea(errorText);
+    List<String[]> tmpList = ValueBuffer.getQuaternion();
+    System.out.println(tmpList);
 //    Controller.getCoreFrame().setParsingTree(analyzeTree);
 //    System.out.println("OK");
   }
